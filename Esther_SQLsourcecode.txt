@@ -1,0 +1,129 @@
+MENTORNESS INTERNSHIP PROGRAM
+SOURCE CODE FOR HOTEL RESERVATIONS DATASET ANALYSIS WITH MySQL BY - BANJO ESTHER O.
+DATASOURCE - Mentorness
+
+Note-- My table name is 'hotelreserve'
+
+
+Question 1 - What is the total number of reservations in the dataset?
+Query - SELECT COUNT(DISTINCT Booking_ID) AS total_reservations 
+	FROM hotelreserve; --this is to make sure there are no duplicate values
+			Otherwise,
+	SELECT COUNT(Booking_ID) AS total_reservations 
+	FROM hotelreserve;
+
+Question 2 - Which meal plan is the most popular among guests?
+Query - SELECT type_of_meal_plan, COUNT(*) AS most_popular 
+	FROM hotelreserve
+	GROUP  BY type_of_meal_plan
+	ORDER BY most_popular DESC
+	LIMIT 1;
+
+
+Question 3 - What is the average price per room for reservations involving children?
+Query - SELECT ROUND(AVG(avg_price_per_room), 2) AS avg_roomprice_with_children
+	FROM hotelreserve
+	WHERE no_of_children > 0;
+
+
+Question 4 - How many reservations were made for the year 20XX (replace XX with the desired year)?
+
+Note - My desired year is 2018
+
+Query - SELECT year(arrival_date) as desired_year, COUNT(*) AS reservation_count
+        FROM hotelreserve
+        WHERE YEAR(arrival_date) = 2018
+        GROUP BY desired_year;
+
+
+Question 5 - What is the most commonly booked room type?
+Query - SELECT room_type_reserved, COUNT(*) AS commonly_booked
+	FROM hotelreserve 
+	GROUP BY room_type_reserved 
+	ORDER BY commonly_booked DESC
+	LIMIT 1;
+
+
+Question 6 - How many reservations fall on a weekend (no_of_weekend_nights > 0)?
+Query - SELECT SUM(no_of_weekend_nights) AS total_weekend_reservations 
+	FROM hotelreserve
+	WHERE no_of_weekend_nights > 0;
+
+
+Question 7 - What is the highest and lowest lead time for reservations?
+Query - SELECT
+	(SELECT MAX(lead_time) FROM hotelreserve) AS highest_leadtime,
+	(SELECT MIN(lead_time) FROM hotelreserve) AS lowest_leadtime;
+
+
+Question 8 - What is the most common market segment type for reservations?
+Query - SELECT DISTINCT market_segment_type, COUNT(*) AS count_market 
+	FROM hotelreserve
+	GROUP BY market_segment_type
+	ORDER BY count_market DESC
+	LIMIT 1;
+
+
+Question 9 - How many reservations have a booking status of "Confirmed"?
+
+Firstly update the table to set the booking_status column value of 'Not Canceled' to 'Confirmed'
+Query - UPDATE hotelreserve
+	SET booking_status = "Confirmed"
+	WHERE booking_status = "Not_Canceled";
+		Then this answers the question
+Query - SELECT DISTINCT booking_status, COUNT(*) AS confirmed_reservations 
+	FROM hotelreserve
+	WHERE booking_status = "Confirmed"
+	GROUP BY booking_status;
+
+
+Question 10 - What is the total number of adults and children across all reservations?
+Query - SELECT SUM(no_of_children) AS ChildrenTotal, SUM(no_of_adults) AS AdultsTotal
+	FROM hotelreserve;
+
+
+Question 11 - What is the average number of weekend nights for reservations involving children?
+Query - SELECT ROUND(AVG(no_of_weekend_nights), 2) AS avg_weekend_nights_Children 
+	FROM hotelreserve
+	WHERE no_of_children > 0;
+
+
+Question 12 - How many reservations were made in each month of the year?
+Query - SELECT MONTHNAME(arrival_date) AS month, COUNT(*) AS reservations_by_months
+	FROM hotelreserve
+	GROUP BY MONTH(arrival_date), month
+	ORDER BY month(arrival_date);
+
+
+Question 13 - What is the average number of nights (both weekend and weekday) spent by guests for each room type?
+Query - SELECT room_type_reserved, ROUND(AVG(no_of_weekend_nights + no_of_week_nights), 2) 
+	AS avg_no_of_nights
+	FROM hotelreserve
+	GROUP BY room_type_reserved
+	ORDER BY room_type_reserved;
+
+
+Qustion 14 - For reservations involving children, what is the most common room type, and what is the average
+price for that room type?
+Query - SELECT room_type_reserved, ROUND(AVG(avg_price_per_room), 2) AS average_price
+	FROM hotelreserve
+	WHERE no_of_children > 0
+
+	AND room_type_reserved = 
+	(
+
+	SELECT room_type_reserved FROM hotelreserve
+	WHERE no_of_children > 0
+	GROUP BY room_type_reserved
+	ORDER BY COUNT(*) DESC
+	LIMIT 1
+	)
+	GROUP BY room_type_reserved;
+
+
+Question 15 - Find the market segment type that generates the highest average price per room.
+Query - SELECT market_segment_type, ROUND(AVG(avg_price_per_room), 0) AS highest_avg_room_price
+	FROM hotelreserve
+	GROUP BY market_segment_type
+	ORDER BY highest_avg_room_price DESC
+	LIMIT 1;

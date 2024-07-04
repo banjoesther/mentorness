@@ -1,0 +1,107 @@
+MENTORNESS INTERNSHIP PROGRAM
+SOURCE CODE FOR YOUTUBE SONGS DATA ANALYSIS WITH POWER BI
+BY - BANJO ESTHER OLAWUNMI
+
+DATASOURCE -  MENTORNESS
+
+The following codes was used for the cleaning process of the dataset on the power query editor
+Query code;
+
+let
+    Source = Excel.Workbook(File.Contents("C:\Users\user\Downloads\songs.xlsx"), null, true),
+    Sheet1_Sheet = Source{[Item="Sheet1",Kind="Sheet"]}[Data],
+
+    #"Promoted Headers" = Table.PromoteHeaders
+	(Sheet1_Sheet, [PromoteAllScalars=true]),
+
+    #"Changed Type" = Table.TransformColumnTypes
+	(#"Promoted Headers",
+	{{"Column1", Int64.Type}, {"video_id", type text}, {"channelTitle", type text}, 
+	{"title", type text}, {"description", type text}, {"tags", type text}, 
+	{"publishedAt", type datetime}, {"viewCount", Int64.Type}, 
+	{"likeCount", Int64.Type}, {"favoriteCount", Int64.Type}, 
+	{"commentCount", Int64.Type}, {"duration", type duration}, 
+	{"definition", type text}, {"caption", type logical}}),
+	
+    #"Removed Columns" = Table.RemoveColumns
+	(#"Changed Type",{"Column1"}),
+
+    #"Split Column by Delimiter" = Table.SplitColumn
+	(Table.TransformColumnTypes
+	(#"Removed Columns", {{"publishedAt", type text}}, "en-US"), 
+	"publishedAt", Splitter.SplitTextByEachDelimiter({" "}, QuoteStyle.Csv, false), 
+	{"publishedAt.1", "publishedAt.2"}),
+
+    #"Changed Type1" = Table.TransformColumnTypes
+	(#"Split Column by Delimiter",
+	{{"publishedAt.1", type date}, {"publishedAt.2", type time}}),
+
+    #"Renamed Columns" = Table.RenameColumns
+	(#"Changed Type1",{{"publishedAt.1", "Date"}, {"publishedAt.2", "Time"}}),
+
+    #"Uppercased Text" = Table.TransformColumns
+	(#"Renamed Columns",{{"definition", Text.Upper, type text}}),
+
+    #"Removed Duplicates" = Table.Distinct(#"Uppercased Text")
+
+in
+
+    #"Removed Duplicates"
+
+REVIEWING VISUALS AND CONFIGURATIONS:
+Steps used in building each visuals;
+In Power BI Desktop, navigate to my report pages.
+The following are the documentation of fields used, filters applied, and customizations made.
+
+1. The card visuals which stand for the KPIs as regards the nature of the dataset,
+	Total Videos - the 'video_id' field was used as "count(distinct) of video_id"
+	Views Count - the 'viewCount' field was used as "count(distinct) of viewCount"
+	Likes Count - the 'likeCount' field was used as "count(distinct) of likeCount"
+	Comments Count - the 'commentCount' field was used as "count(distinct) of commentCount"
+	Favorite Count - the 'favoriteCount' field was used as "count of favoriteCount"	
+2. The trends analysis was represented with area chart using;
+	'year' and 'viewCount' fields,
+	Year on the X-axis, viewCount on the Y-axis
+3. The comparism between months was represented with a clustered column chart using;
+	'month' and 'likeCount' fields,
+	Month on the X-axis, likeCount on the Y-axis
+4. The proportion of video quality was represented with a donut chart using;
+	'definition' and 'viewCount' fields
+	'definition' as the legend, and 'viewCount' to measure the proportion of legend
+5. The months(6) that had the most comments count was represented with a clustered bar chart using;
+	'month' and 'commentCount' fields,
+	Month on the Y-axis, commentCount on X-axis
+6. The proportion of caption was visualized with a pie chart using;
+	'caption' and 'video_id' fields
+	'caption' as the legend, and 'video_id' to measure the proportion of legend
+7. The slicers used on the dashboard for filtering are;
+	*date slicer using 'date' field,
+	*caption slicer using 'caption' field,
+	*video quality(definition) slicer using 'definition' field
+8. Button for clearing filter was added by
+	navigate to insert tab > buttons > bookmark > shape = 'pill',
+	style > text = 'clear filters', 'fill' = on,
+	action > type = 'bookmark', bookmark = 'clear'
+
+	CONFIGURATION AND CUSTOMIZATION
+A title was added to the dashboard with a picture to depict the brand's name and a text box
+	insert tab > image > browse the saystem to select your image
+	'YOUTUBE SONGS ANALYSIS REPORT'
+	Then resize to fit the required space and place well.
+All visuals were formatted having the following;
+	A title 
+	A divider
+	Chosen color of red to fit the brand's color
+	Fonts increased 15pts and formatted to black and bold
+	Data labels
+	Tooltips 
+Then the general customization for all visuals has the following effects;
+	Visual borders > color = black,
+			 rounded corners = 10pts for cards and slicers, 15pts for visuals
+	Shadow > color = black,
+		 offset = outside,
+		 position = bottom right
+The background of the report canvas remains white.
+
+All customization and configuration process was the same for the insights page.
+	

@@ -1,5 +1,30 @@
 select * from hotelreserve;
 
+#check for null values
+SELECT 
+    SUM(CASE WHEN Booking_ID IS NULL THEN 1 ELSE 0 END) AS Booking_ID_nulls,
+    SUM(CASE WHEN no_of_adults IS NULL THEN 1 ELSE 0 END) AS no_of_adults_nulls,
+    SUM(CASE WHEN no_of_children IS NULL THEN 1 ELSE 0 END) AS no_of_children_nulls,
+    SUM(CASE WHEN no_of_weekend_nights IS NULL THEN 1 ELSE 0 END) AS no_of_weekend_nights_nulls,
+    SUM(CASE WHEN no_of_week_nights IS NULL THEN 1 ELSE 0 END) AS no_of_week_nights_nulls,
+    SUM(CASE WHEN type_of_meal_plan IS NULL THEN 1 ELSE 0 END) AS type_of_meal_plan_nulls,
+    SUM(CASE WHEN required_car_parking_space IS NULL THEN 1 ELSE 0 END) AS required_car_parking_space_nulls,
+    SUM(CASE WHEN room_type_reserved IS NULL THEN 1 ELSE 0 END) AS room_type_reserved_nulls,
+    SUM(CASE WHEN lead_time IS NULL THEN 1 ELSE 0 END) AS lead_time_nulls,
+    SUM(CASE WHEN arrival_year IS NULL THEN 1 ELSE 0 END) AS arrival_year_nulls,
+    SUM(CASE WHEN arrival_month IS NULL THEN 1 ELSE 0 END) AS arrival_month_nulls,
+    SUM(CASE WHEN arrival_date IS NULL THEN 1 ELSE 0 END) AS arrival_date_nulls,
+    SUM(CASE WHEN market_segment_type IS NULL THEN 1 ELSE 0 END) AS market_segment_type_nulls,
+    SUM(CASE WHEN repeated_guest IS NULL THEN 1 ELSE 0 END) AS repeated_guest_nulls,
+    SUM(CASE WHEN no_of_previous_cancellations IS NULL THEN 1 ELSE 0 END) AS no_of_previous_cancellations_nulls,
+    SUM(CASE WHEN no_of_special_requests IS NULL THEN 1 ELSE 0 END) AS no_of_special_requests_nulls,
+    SUM(CASE WHEN avg_price_per_room IS NULL THEN 1 ELSE 0 END) AS avg_price_per_room_nulls,
+    SUM(CASE WHEN booking_status IS NULL THEN 1 ELSE 0 END) AS booking_status_nulls
+FROM 
+    hotelreserve;
+
+
+#data analysis
 #total number of reservations in dataset
 select count(Booking_ID) from hotelreserve;
 
